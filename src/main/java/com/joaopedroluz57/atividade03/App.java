@@ -1,6 +1,7 @@
 package com.joaopedroluz57.atividade03;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joaopedroluz57.atividade03.borda.impl.GeradorImpl;
 import com.joaopedroluz57.atividade03.borda.impl.PesquisadorPacote;
 import com.joaopedroluz57.atividade03.encriptacao.chaves.FalhaGeracaoDeChaves;
@@ -9,6 +10,7 @@ import com.joaopedroluz57.atividade03.encriptacao.impl.EncriptadorImpl;
 import com.joaopedroluz57.atividade03.encriptacao.impl.GeradorDeChavesImpl;
 import com.joaopedroluz57.atividade03.modelo.navio.Navio;
 import com.joaopedroluz57.atividade03.modelo.pacote.Pacote;
+import com.joaopedroluz57.atividade03.modelo.pacoteEncriptado.PacoteEncriptado;
 import com.joaopedroluz57.atividade03.nuvem.impl.RelatorioImpl;
 
 import java.util.ArrayList;
@@ -58,19 +60,17 @@ public class App {
         }
     }
 
-    public static List<String> lerPacotes(EncriptadorImpl encriptador) {
-        List<String> pacotesEncriptados = new ArrayList<>();
+    public static List<PacoteEncriptado> encriptarPacotes(GeradorDeChavesImpl gerador) throws JsonProcessingException, FalhaEncriptacao, FalhaGeracaoDeChaves {
+        List<PacoteEncriptado> pacotesEncriptados = new ArrayList<>();
 
         for (PesquisadorPacote pesquisadorPacote : pesquisadoresPacote) {
-            pesquisadorPacote.getPacotesEspeciaisEncontrados().forEach(
-                    pacote -> {
-                        try {
-                            pacotesEncriptados.add(encriptador.encriptar(pacote.toJson(pacote))
-                            );
-                        } catch (FalhaGeracaoDeChaves | FalhaEncriptacao | JsonProcessingException falhaGeracaoDeChaves) {
-                            falhaGeracaoDeChaves.printStackTrace();
-                        }
-                    });
+            for (Pacote pacote : pesquisadorPacote.getPacotesEspeciaisEncontrados()) {
+                EncriptadorImpl encriptador = new EncriptadorImpl(gerador);
+                PacoteEncriptado pacoteEncriptado = new PacoteEncriptado(encriptador.encriptar(Pacote.toJson(pacote)), encriptador);
+                pacotesEncriptados.add(pacoteEncriptado);
+
+                System.out.println("Dados dos pacotes especiais [borda]: " + pacoteEncriptado.getPacote());
+            }
         }
 
         return pacotesEncriptados;
@@ -87,7 +87,6 @@ public class App {
         RelatorioImpl relatorio = new RelatorioImpl();
 
         GeradorDeChavesImpl geradorDeChaves = new GeradorDeChavesImpl();
-        EncriptadorImpl encriptador = new EncriptadorImpl(geradorDeChaves);
         geradorDeChaves.iniciar(CAMINHO_VIDEO);
 
         List<Navio> naviosMonitorados = gerador.gerarNavio(QUANTIDADE_DE_NAVIOS);
@@ -99,11 +98,11 @@ public class App {
 
         System.out.println("\n### Pacotes especiais encontrados ###");
 
-        List<String> pacotesEncriptados = lerPacotes(encriptador);
+        List<PacoteEncriptado> pacotesEncriptados = encriptarPacotes(geradorDeChaves);
 
-        relatorio.gerarRelatorio(pacotesEncriptados, encriptador);
+        relatorio.gerarRelatorio(pacotesEncriptados);
 
-        System.out.println("### Simulação finalizada ###");
+        System.out.println("\n### Simulação finalizada ###");
 
         geradorDeChaves.finalizar();
     }

@@ -27,6 +27,7 @@ public class GeradorDeChavesImpl implements GeradorDeChaves {
         grabber = new FFmpegFrameGrabber(caminhoVideo);
         try {
             grabber.start();
+            gerarChave();
         } catch (Exception e) {
             throw new FalhaGeracaoDeChaves("falha de inicialização: " + e.getMessage());
         }

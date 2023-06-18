@@ -21,7 +21,7 @@ public class Pacote {
         return id;
     }
 
-    public String toJson(Pacote pacote) throws JsonProcessingException {
+    public static String toJson(Pacote pacote) throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(pacote);
     }
 

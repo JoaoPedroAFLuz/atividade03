@@ -35,8 +35,8 @@ public class EncriptadorImpl extends Encriptador<GeradorDeChavesImpl> {
         return bytes;
     }
 
-    public String encriptar(String dados) throws FalhaGeracaoDeChaves, FalhaEncriptacao {
-        String chave = gerador.gerarChave();
+    public String encriptar(String dados) throws FalhaEncriptacao {
+        String chave = gerador.getUltimaChave();
 
         String encriptacao = null;
         try {
