@@ -32,13 +32,13 @@ public class PesquisadorPacote implements Runnable {
          */
 
         for (Container container : navio.getContainers()) {
-            System.out.println("Procurando pacotes especiais no container: " + container.getId()
-                    + " do navio com id: " + navio.getId());
+//            System.out.println("Procurando pacotes especiais no container: " + container.getId()
+//                    + " do navio com id: " + navio.getId());
             for (Pacote pacote : container.getPacotes()) {
                 for (Pacote pacoteEspecial : pacotesEspeciais) {
                     if (pacote.equals(pacoteEspecial)) {
-                        System.out.println("Pacote especial de id: " + pacote.getId() + " encontrado no container "
-                                + container.getId() + " do navio: " + navio.getId());
+//                        System.out.println("Pacote especial de id: " + pacote.getId() + " encontrado no container "
+//                                + container.getId() + " do navio: " + navio.getId());
                         pacotesEspeciaisEncontrados.add(pacote);
                     }
                 }

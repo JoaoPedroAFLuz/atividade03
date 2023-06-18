@@ -1,5 +1,8 @@
 package com.joaopedroluz57.atividade03.modelo.pacote;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.UUID;
 
 public class Pacote {
@@ -16,6 +19,10 @@ public class Pacote {
 
     public UUID getId() {
         return id;
+    }
+
+    public String toJson(Pacote pacote) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(pacote);
     }
 
     @Override
